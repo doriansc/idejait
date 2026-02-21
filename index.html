@@ -229,16 +229,6 @@
             position: relative;
             mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-            overflow-x: auto;
-            cursor: grab;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .clients-track-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-        .clients-track-wrapper.dragging {
-            cursor: grabbing;
         }
         .clients-track {
             display: flex;
@@ -247,9 +237,6 @@
             animation: slideLogos 35s linear infinite;
         }
         .clients-track:hover {
-            animation-play-state: paused;
-        }
-        .clients-track-wrapper.manual-scroll .clients-track {
             animation-play-state: paused;
         }
         .client-logo {
@@ -1019,41 +1006,6 @@
                 el.style.transform = `translateY(${offset}px)`;
             });
         }, { passive: true });
-
-        // Drag-to-scroll for clients track (mouse + touch)
-        const trackWrapper = document.querySelector('.clients-track-wrapper');
-        if (trackWrapper) {
-            let isDragging = false;
-            let startX, scrollLeft, resumeTimer;
-
-            function startDrag(x) {
-                isDragging = true;
-                startX = x - trackWrapper.offsetLeft;
-                scrollLeft = trackWrapper.scrollLeft;
-                trackWrapper.classList.add('dragging', 'manual-scroll');
-                clearTimeout(resumeTimer);
-            }
-            function onDrag(x) {
-                if (!isDragging) return;
-                const walk = (x - trackWrapper.offsetLeft - startX) * 1.5;
-                trackWrapper.scrollLeft = scrollLeft - walk;
-            }
-            function endDrag() {
-                isDragging = false;
-                trackWrapper.classList.remove('dragging');
-                resumeTimer = setTimeout(() => {
-                    trackWrapper.classList.remove('manual-scroll');
-                }, 3000);
-            }
-
-            trackWrapper.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.pageX); });
-            trackWrapper.addEventListener('mousemove', e => onDrag(e.pageX));
-            trackWrapper.addEventListener('mouseup', endDrag);
-            trackWrapper.addEventListener('mouseleave', endDrag);
-            trackWrapper.addEventListener('touchstart', e => startDrag(e.touches[0].pageX), { passive: true });
-            trackWrapper.addEventListener('touchmove', e => onDrag(e.touches[0].pageX), { passive: true });
-            trackWrapper.addEventListener('touchend', endDrag);
-        }
     </script>
 </body>
 </html>
